@@ -88,21 +88,95 @@ object mapa {
 
 object eventos
 {
+    method aplicarGravedad() {} 
+
+    method mostrarLineasBorradas(cantidad)
+    {
+        const nuevoEvento = new Evento(lineasBorradas = cantidad)
+        nuevoEvento.spawn()
+    }
+
+    method aumentarContadorLineasBorradas(cantidad)
+    {
+        contadorLineas.aumentar(cantidad)
+    }
+}
+
+object contadorLineas
+{
     var property image = null
+    var property position = game.at(mapa.minX() - 4, mapa.maxY() - 13)
+
+    var lineasBorradas = 0
+    const digitos = [0]
+    const numeros = []
+    method numeros() = numeros
+
+    method inicializar()
+    {
+        numeros.add(new Numero(position = position.down(2)))
+        self.actualizarNumeros(0)
+    }
+
+    method aumentar(cantidad) 
+    {
+        lineasBorradas += cantidad
+        self.actualizarNumeros(cantidad)
+    }
+
+    method actualizarNumeros(cantidad) // TODO: Continuar acá
+    {
+        digitos.first().add(cantidad)
+        //digitos.forEach({d1, d2 => if(d1 >= 10) d2.plus(1) d1.s}) 
+    }
+    method aplicarGravedad() {}
+}
+
+class Numero
+{
+    var property position
+    var property num = null
+    var property image = null
+
+    method aplicarGravedad() {}
+
+    const imagenes = [
+        "nCERO",
+        "nUNO",
+        "nDOS",
+        "nTRES",
+        "nCUATRO",
+        "nCINCO",
+        "nSEIS",
+        "nSIETE",
+        "nOCHO",
+        "nNUEVE"]
+    method cambiarNumero(nuevoNum)
+    {
+        num = nuevoNum
+        image = imagenes.get(nuevoNum) + ".png"
+    }
+}
+
+class Evento
+{
+    var lineasBorradas
+    var huboTspin = false
+
     var property position = game.at(mapa.minX() - 11, mapa.maxY() - 9)
+    var property image = null
 
     const imagenes = [null, "eSINGLE.png", "eDOUBLE.png", "eTRIPLE.png", "eQUAD.png"]
 
     method aplicarGravedad() {} 
 
-    method cambiarImagen(nuevaImagen) {image = nuevaImagen}
-    method mostrarLineasBorradas(cantidad)
+    method spawn()
     {
-        self.cambiarImagen(imagenes.get(cantidad))
-        // console.println(image)
-        if(not game.hasVisual(self)) game.addVisual(self)
-        game.schedule(2000, {if(game.hasVisual(self)) game.removeVisual(self)})
+        image = imagenes.get(lineasBorradas)
+        game.addVisual(self)
+        game.schedule(2000, {game.removeVisual(self)})
     }
+
 }
 
 object bagGenerator {
@@ -163,6 +237,7 @@ object juego
     {
         piezaActual.crear()
         bagGenerator.initBagPreview()
+        contadorLineas.inicializar()
 
     }
 
@@ -372,7 +447,11 @@ class Pieza
         self.bloques().forEach({bloque => 
             contador = contador + mapa.chequearLinea(bloque.position().y())
         })
-        if(contador > 0) eventos.mostrarLineasBorradas(contador)
+        if(contador > 0)
+        {
+            eventos.mostrarLineasBorradas(contador)
+            eventos.aumentarContadorLineasBorradas(contador)
+        }
     }
 
     method actualizarPos(rotacion)
