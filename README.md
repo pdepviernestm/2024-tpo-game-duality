@@ -1,10 +1,8 @@
-# Nombre del juego (<- borrar y completar)
+# Tetris Trainer
 
 ## Equipo de desarrollo
-
-- Alguien
-- Persona
-- etc.
+- Sorrentino Tadeo
+- Torres Santiago
 
 ## Capturas
 
@@ -12,11 +10,38 @@
 
 ## Reglas de Juego / Instrucciones
 
-(Escribirlas)
+El juego "Tetris Trainer" es una adaptación de Tetris singleplayer diseñada para que los jugadores puedan mejorar su habilidad en este clásico juego. 
+Los modos de juegos serán:
 
+#### Sprint:
+Modo Clásico de Tetris moderno.
+El tablero comienza vacío y el objetivo es limpiar 40 líneas lo más rápido posible.
+
+#### Dig race:
+El objetivo principal es limpiar, lo más rápido posible, un número determinado de líneas que están bloqueadas por residuos o "garbage" generados en el tablero.
+Estas líneas tienen huecos en diferentes posiciones, lo que obliga al jugador a pensar cuidadosamente como poner las piezas poder limpiar las líneas.
+
+El juego se adherirá a los estándares actuales del reglamento del Tetris, contando con controles modernos similares a los de Tetr.io, permitiendo a los jugadores realizar movimientos como:
+- Desplazamientos laterales cortos y largos.
+- Rotación en sentido horario y antihorario, junto con una opción de rotación de 180°.
+- Hold: Guardar una pieza para usarla más tarde.
+- Drop (caída rápida)
+- HardDrop (caída instantánea).
+
+El sistema de rotación utilizado será el Super Rotation System (SRS), el estándar más común en versiones modernas de Tetris. Este permite técnicas avanzadas como los T-Spins y otras rotaciones especiales.
+
+Además, se empleará un randomizador de 7-bag, que garantiza que las siete piezas diferentes aparezcan una vez en cada ciclo antes de repetirse.
+
+El juego presentará estadísticas detalladas para que los jugadores puedan medir su rendimiento:
+- Timer: Tiempo que lleva limpiar las líneas.
+- PPS (Pieces Per Second): Velocidad de colocación de piezas.
+- Cantidad de Líneas limpiadas.
+- Finesse: Precisión de los movimientos.
+
+El juego también incluirá la opción de Ghost Pieces, una pieza fantasma que muestra dónde caerá la pieza actual, ayudando a planear mejor las jugadas
 
 ## Otros
 
-- Curso/Facultad
-- Versión de wollok
-- Una vez terminado, no tenemos problemas en que el repositorio sea público / queremos manternerlo privado
+- Curso k2005, Universidad Tecnológica Nacional facultad regional Buenos Aires
+- Versión de wollok : 0.2.7
+- Una vez terminado, no tenemos problemas en que el repositorio sea público
