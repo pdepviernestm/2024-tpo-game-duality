@@ -1,34 +1,41 @@
 import wollok.game.*
-import tetraminos.*
+import gameMaster.*
+import menu.*
+import bloques.*
+import eventos.*
+import numeros.*
+import piezas.*
 
 program tetris {
     const cellSize = 32
     const gameWidth = 40
     const gameHeight = 24
 
+    pantallaActual.iniciar()
 
     game.width(gameWidth)
     game.height(gameHeight)
     game.cellSize(cellSize)
 
-    game.boardGround("TetrisTrainerBackground.png")
+    game.boardGround("TEST_bkg.png")
     game.title("Tetris Trainer")
     game.start()
 
-    juego.iniciarJuego()
-
-    //keyboard.control().onPressDo({dasEnabled = not dasEnabled})
-    keyboard.space().onPressDo({juego.ponerPieza()})
-    keyboard.shift().onPressDo({juego.intentarHold()})
+    keyboard.space().onPressDo({pantallaActual.teclaSpace()})
+    keyboard.shift().onPressDo({pantallaActual.teclaShift()})
     
-    keyboard.right().onPressDo({juego.moverPieza("derecha")})
-    keyboard.left().onPressDo({juego.moverPieza("izquierda")})
-    keyboard.down().onPressDo({juego.moverPieza("abajo")})
+    keyboard.right().onPressDo({pantallaActual.teclaRight()})
+    keyboard.left().onPressDo({pantallaActual.teclaLeft()})
+    keyboard.up().onPressDo({pantallaActual.teclaUp()})
+    keyboard.down().onPressDo({pantallaActual.teclaDown()})
 
-    keyboard.c().onPressDo({juego.rotarPieza("derecha")})
-    keyboard.x().onPressDo({juego.rotarPieza("opuesto")})
-    keyboard.z().onPressDo({juego.rotarPieza("izquierda")})
+    keyboard.c().onPressDo({pantallaActual.teclaC()})
+    keyboard.x().onPressDo({pantallaActual.teclaX()})
+    keyboard.z().onPressDo({pantallaActual.teclaZ()})
 
-    game.onTick(500, "movimiento", {juego.aplicarGravedad()})
+    keyboard.backspace().onPressDo({pantallaActual.teclaBack()})
+
+
+    game.onTick(500, "movimiento", {pantallaActual.aplicarTick()})
 }
 
