@@ -6,7 +6,10 @@
 
 ## Capturas
 
-(agregar)
+![Instructions](showcase/screenshot_instructions.png)
+![Sprint](showcase/screenshot_sprint.png)
+![Dig Race](showcase/screenshot_digrace.png)
+![End Screen](showcase/screenshot_endscreen.png)
 
 ## Reglas de Juego / Instrucciones
 
@@ -15,14 +18,14 @@ Los modos de juegos serán:
 
 #### Sprint:
 Modo Clásico de Tetris moderno.
-El tablero comienza vacío y el objetivo es limpiar 40 líneas lo más rápido posible.
+El tablero comienza vacío y el objetivo es limpiar 20 líneas lo más rápido posible.
 
 #### Dig race:
 El objetivo principal es limpiar, lo más rápido posible, un número determinado de líneas que están bloqueadas por residuos o "garbage" generados en el tablero.
 Estas líneas tienen huecos en diferentes posiciones, lo que obliga al jugador a pensar cuidadosamente como poner las piezas poder limpiar las líneas.
 
 El juego se adherirá a los estándares actuales del reglamento del Tetris, contando con controles modernos similares a los de Tetr.io, permitiendo a los jugadores realizar movimientos como:
-- Desplazamientos laterales cortos y largos.
+- Desplazamientos laterales.
 - Rotación en sentido horario y antihorario, junto con una opción de rotación de 180°.
 - Hold: Guardar una pieza para usarla más tarde.
 - Drop (caída rápida)
@@ -32,13 +35,7 @@ El sistema de rotación utilizado será el Super Rotation System (SRS), el está
 
 Además, se empleará un randomizador de 7-bag, que garantiza que las siete piezas diferentes aparezcan una vez en cada ciclo antes de repetirse.
 
-El juego presentará estadísticas detalladas para que los jugadores puedan medir su rendimiento:
-- Timer: Tiempo que lleva limpiar las líneas.
-- PPS (Pieces Per Second): Velocidad de colocación de piezas.
-- Cantidad de Líneas limpiadas.
-- Finesse: Precisión de los movimientos.
-
-El juego también incluirá la opción de Ghost Pieces, una pieza fantasma que muestra dónde caerá la pieza actual, ayudando a planear mejor las jugadas
+Se presentarán estadísticas al finalizar el juego que evaluan cuán eficiente fue el jugador a la hora de poner las piezas. 
 
 ## Otros
 

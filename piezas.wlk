@@ -7,10 +7,7 @@ class Pieza
 {
     var estadoRotacion = 0
     method estadoRotacion() = estadoRotacion
-    method resetearRotacion()
-    {
-        estadoRotacion = 0
-    }
+    method resetearRotacion() {estadoRotacion = 0}
 
     const posInicial = game.at((mapa.minX() + mapa.maxX()) / 2, mapa.maxY() - 2)
 
@@ -67,7 +64,6 @@ class Pieza
         const posiblesPosiciones = new Range(start = mapa.minY() - 2, end = position.y()).filter({posY => 
         not mapa.esMovimientoValido(self, game.at(position.x(), posY), estadoRotacion)}).map({n => n + 1})
 
-        // console.println(posiblesPosiciones)
         const nuevaPos = game.at(position.x(), posiblesPosiciones.max())
         
         self.movete(nuevaPos)
@@ -83,7 +79,7 @@ class Pieza
         if(contador > 0)
         {
             eventos.mostrarLineasBorradas(contador)
-            eventos.aumentarContadorLineasBorradas(contador)
+            eventos.aumentarLineasBorradas(contador)
         }
     }
 
@@ -103,22 +99,10 @@ class Pieza
     
     method nuevoEstadoRotacion(sentido)
     {
-        if(sentido == "derecha")
-        {
-            return (estadoRotacion + 1) % 4
-        }
-        else if(sentido == "opuesto")
-        {
-            return (estadoRotacion + 2) % 4
-        }
-        else if(sentido == "izquierda")
-        {
-            return (estadoRotacion + 3) % 4
-        }
-        else
-        {
-            return -1
-        }
+        if(sentido == "derecha") {return (estadoRotacion + 1) % 4}
+        else if(sentido == "opuesto") {return (estadoRotacion + 2) % 4}
+        else if(sentido == "izquierda") {return (estadoRotacion + 3) % 4}
+        else {return -1}
     }
 
     method calcularIndiceKick(estadoActual, estadoSiguiente)
@@ -129,27 +113,20 @@ class Pieza
         [  9,  3,  0,  4], // estadoActual 2: [2 -> 0], [2 -> R], [2 -> 2], [2 -> L]
         [  6, 11,  5,  0]] // estadoActual L: [L -> 0], [L -> R], [L -> 2], [L -> L]
 
-
         return indices.get(estadoActual).get(estadoSiguiente)
     }
 
     method aplicarKick(nuevoEstado)
     {
         const indice = self.calcularIndiceKick(estadoRotacion, nuevoEstado)
-        //console.println(indice)
         
         var posicionesDeKick = self.matKicks().get(indice).map({vec =>
             game.at(position.x() + vec.get(0), position.y() + vec.get(1))})
             
-        // console.println(posicionesDeKick)
         posicionesDeKick = posicionesDeKick.filter({
-                posKick => mapa.esMovimientoValido(self, posKick, nuevoEstado)})
-                
-        if(not posicionesDeKick.isEmpty())
-        {
-            // console.println(game.at(position.x() - posicionesDeKick.first().x(), position.y() - posicionesDeKick.first().y()))
-            position = posicionesDeKick.first()
-        }
+            posKick => mapa.esMovimientoValido(self, posKick, nuevoEstado)
+        })
+        if(not posicionesDeKick.isEmpty()) {position = posicionesDeKick.first()}
 
         return not posicionesDeKick.isEmpty()
     }
@@ -157,13 +134,13 @@ class Pieza
     method rotar(sentido)
     {
         const nuevoEstado = self.nuevoEstadoRotacion(sentido)
+        const indice = self.calcularIndiceKick(estadoRotacion, nuevoEstado)
         
         if(self.aplicarKick(nuevoEstado))
         {
             estadoRotacion = nuevoEstado
             self.actualizarPos(estadoRotacion)
-        }
-        
+        }        
     }
 
     method movete(nuevaPos) 
@@ -181,15 +158,6 @@ class Pieza
         position = position.down(1)
         self.actualizarPos(estadoRotacion)
     }
-    
-    /*
-    method randomPos(bloques, matRot)
-    {
-        const x = 3.randomUpTo(game.width() - 3).truncate(0)
-        const y = 3.randomUpTo(game.height() - 3).truncate(0)
-        self.movete(game.at(x, y))
-    }
-    */
 }
 
 class PiezaI inherits Pieza {
@@ -201,7 +169,6 @@ class PiezaI inherits Pieza {
 
     const img = "bCYAN.png"
     method imagenOriginal() = "PiezaI.png"
-    method imagenHold() = "Hold" + self.imagenOriginal()
 
     const bloques = #{
         new Bloque(id = 0, image = img),
@@ -216,6 +183,7 @@ class PiezaI inherits Pieza {
         [[1, 2], [1, 1], [1, 0], [1, -1]], // Estado 1 (derecha)
         [[-1, 0], [0, 0], [1, 0], [2, 0]], // Estado 2 (invertido)
         [[0, 2], [0, 1], [0, 0], [0, -1]]] // Estado 3 (izquierda)
+
     override method matRot() = matRot
 
     override method matKicks() = self.matKicksI()
@@ -231,7 +199,6 @@ class PiezaJ inherits Pieza {
     const img = "bBLUE.png"
 
     method imagenOriginal() = "PiezaJ.png"
-    method imagenHold() = "Hold" + self.imagenOriginal()
 
     const bloques = #{
         new Bloque(id = 0, image = img),
@@ -260,7 +227,6 @@ class PiezaL inherits Pieza{
 
     const img = "bORANGE.png"
     method imagenOriginal() = "PiezaL.png"
-    method imagenHold() = "Hold" + self.imagenOriginal()
 
     const bloques = #{
         new Bloque(id = 0, image = img),
@@ -288,7 +254,6 @@ class PiezaO inherits Pieza{
 
     const img = "bYELLOW.png"
     method imagenOriginal() = "PiezaO.png"
-    method imagenHold() = "Hold" + self.imagenOriginal()
 
     const bloques = #{
         new Bloque(id = 0, image = img),
@@ -316,7 +281,6 @@ class PiezaS inherits Pieza{
 
     const img = "bGREEN.png"
     method imagenOriginal() = "PiezaS.png"
-    method imagenHold() = "Hold" + self.imagenOriginal()
 
     const bloques = #{
         new Bloque(id = 0, image = img),
@@ -337,14 +301,10 @@ class PiezaS inherits Pieza{
 }
 class PiezaT inherits Pieza {
     var property image = self.imagenOriginal()
-    method cambiarImagen(imagen)
-    {
-        image = imagen
-    }
+    method cambiarImagen(imagen) {image = imagen}
 
     const img = "bPURPLE.png"
     method imagenOriginal() = "PiezaT.png"
-    method imagenHold() = "Hold" + self.imagenOriginal()
 
     const bloques = #{
         new Bloque(id = 0, image = img),
@@ -373,7 +333,6 @@ class PiezaZ inherits Pieza{
 
     const img = "bRED.png"
     method imagenOriginal() = "PiezaZ.png"
-    method imagenHold() = "Hold" + self.imagenOriginal()
 
     const bloques = #{
         new Bloque(id = 0, image = img),

@@ -2,6 +2,7 @@ import wollok.game.*
 import bloques.*
 import piezas.*
 import eventos.*
+import menu.*
 
 object mapa {
 
@@ -40,8 +41,6 @@ object mapa {
                 nuevaPos.y() + pieza.aplicarRotacion(rotacion, bloque.id()).y())
             self.esEspacioLibre(pos, bloque) && self.esPosValida(pos)})
 
-        // console.println(nuevaPos)
-        // console.println(esValida)
         return esValida
     }
     
@@ -55,8 +54,7 @@ object mapa {
             const linea = new Range(start = minX, end = maxX - 1).map({x => game.at(x, y)})
             if(self.esLineaCompleta(linea))
             {
-                self.borrarLinea(linea)
-                self.bajarDemasBloques(y)
+                self.borrarLinea(linea, y)
                 return 1
             }
             else
@@ -65,10 +63,16 @@ object mapa {
             }
         }   
     }
-    method borrarLinea(linea)
+    method borrarLinea(linea, y)
     {
         linea.forEach({pos => game.removeVisual(game.getObjectsIn(pos).first())})
-        if(not garbage.isEmpty() && garbage.contains(linea.first().y())) contadorGarbage.aumentar() garbage.remove(linea.first().y())
+
+        self.bajarDemasBloques(y)
+        if(not garbage.isEmpty() && garbage.contains(y))
+        {
+            eventos.aumentarGarbageBorrada()
+            garbage.remove(y)
+        }
     }
 
     method bajarDemasBloques(linea)
@@ -153,37 +157,70 @@ object bagGenerator {
         indices.forEach({indice => 
             pieza = piezas.get(indice)
             pieza.setPos(game.at(27, 18 - indice * 3))
-            //console.println(pieza)
         })
     }
 }
 
 object juego
 {
-    var targetLineasBorradas = 40
+    var targetLineasBorradas = 20
+    const targetGarbageBorrada = 10
     var holdPiece = null
     var property holdDisponible = true
 
-    var property piezaActual = bagGenerator.nuevaPieza()
+    var property piezaActual = null
 
-    method iniciarJuego(modo)
-    {        
-        if(modo == "digrace") mapa.generarGarbage() contadorGarbage.inicializar()
+    var bloquesPuestos = 0
+
+    var property esDigRace = false
+    method digRace(){esDigRace = true}
+    method sprint(){esDigRace = false}
+
+
+    method iniciarJuego()
+    {
+        bloquesPuestos = 0
+        holdPiece = null
+        holdDisponible = true
+        piezaActual = bagGenerator.nuevaPieza()
+        bagGenerator.initBagPreview() 
         piezaActual.crear()
-        bagGenerator.initBagPreview()
-        contadorLineas.inicializar()
+        eventos.inicializar()
+        if(esDigRace)
+        {
+            mapa.generarGarbage()
+            eventos.inicializarContadorGarbage()
+        }
+        eventos.inicializarContadorLineas()
         
     }
 
     method finalizar()
     {
-        game.stop()
+        interfaz.setearPantalla(estadisticas)
+        var score = 0
+        if(esDigRace) {score = targetGarbageBorrada}
+        else {score = targetLineasBorradas}
+
+        score = score * 4
+
+        if(bloquesPuestos < score) {score = 0}
+        else {score = score / bloquesPuestos * 100}
+        
+        //console.println(score)
+        //console.println(bloquesPuestos)
+
+        estadisticas.iniciar()
+        eventos.setearContadorBloques(bloquesPuestos)
+        eventos.setearContadorScore(score.round())
+
+        game.schedule(50, {game.stop()})
     }
 
     method targetLineasBorradas() = targetLineasBorradas
     method targetLineasBorradas(cantidad) {targetLineasBorradas = cantidad}
 
-    method targetGarbageBorrada() = 10
+    method targetGarbageBorrada() = targetGarbageBorrada
 
     method ponerPieza()
     {
@@ -193,6 +230,7 @@ object juego
         piezaActual.crear()
         holdDisponible = true
         game.sound("poner.mp3").play()
+        bloquesPuestos += 4
     }
 
     method rotarPieza(sentido) {piezaActual.rotar(sentido)}
@@ -240,7 +278,6 @@ object juego
         holdPiece = piezaActual
         holdPiece.resetearRotacion()
 
-        //holdPiece.cambiarImagen(holdPiece.imagenHold())
         holdPiece.setPos(game.at(8, 18))
 
         game.addVisual(holdPiece)

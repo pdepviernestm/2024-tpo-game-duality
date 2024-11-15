@@ -2,11 +2,6 @@ import wollok.game.*
 import gameMaster.*
 import numeros.*
 
-class EventoTSpin
-{
-    var property position = game.at(mapa.minX() - 11, mapa.maxY() - 9)
-    method image() = "eTSPIN.png"
-}
 class EventoBorrarLineas
 {
     const lineasBorradas
@@ -42,82 +37,89 @@ object eventos
         const nuevoEvento = new EventoBorrarLineas(lineasBorradas = cantidad)
         eventosActuales.add(nuevoEvento)
         nuevoEvento.spawn()
-        // TODO TSPIN
     }
-
-    method aumentarContadorLineasBorradas(cantidad)
-    {
-        contadorLineas.aumentar(cantidad)
-    }
-}
-
-object contadorLineas
-{
-    var property position = game.at(mapa.minX() - 1, mapa.maxY() - 13)
-
-    var property lineasBorradas = 0
-
-    const numeros = [
-        new Numero(position = position.down(2)),
-        new Numero(position = position.down(2).left(1)),
-        new Numero(position = position.down(2).left(2))
-    ]
-    method numeros() = numeros
+    
+    const contadorLineas = new Contador(dX = -2, dY = -13, digitos = 2, target = juego.targetLineasBorradas())
+    const contadorGarbage = new Contador(dX = -2, dY = -15, digitos = 2, target = juego.targetGarbageBorrada())
+    
+    const contadorBloques = new Contador(dX = 10, dY = -7, digitos = 4, target = 10000)
+    const contadorScore = new Contador(dX = 9, dY = -10, digitos = 3, target = 10000)
 
     method inicializar()
     {
-        numeros.forEach({numero => game.addVisual(numero)})
+        eventosActuales.clear()
+        contadorLineas.setearCondicion(not juego.esDigRace())
+        contadorGarbage.setearCondicion(juego.esDigRace())
+    }
+
+
+    method inicializarContadorLineas() {contadorLineas.inicializar()}
+    method inicializarContadorGarbage() {contadorGarbage.inicializar()}
+
+    method aumentarLineasBorradas(cantidad) {contadorLineas.aumentar(cantidad)}
+    method aumentarGarbageBorrada() {contadorGarbage.aumentar(1)}
+
+    method setearContadorBloques(cantidad) {
+        contadorBloques.inicializar()
+        contadorBloques.aumentar(cantidad)
+    }
+    method setearContadorScore(cantidad) {
+        contadorScore.inicializar()
+        contadorScore.aumentar(cantidad)
+    }
+    
+}
+
+class Contador
+{
+    const dX
+    const dY
+    var property position = game.at(mapa.minX() + dX, mapa.maxY() + dY)
+
+    var property contador = 0
+
+    const digitos
+    const target
+    const numeros = []
+
+    var esCondicion = false
+    method setearCondicion(valor) {esCondicion = valor}
+
+    /*
+    method preparar()
+    {
+        numeros.forEach({num => 
+            if(game.hasVisual(num))
+                game.removeVisual(num)
+        })
+    }
+    */
+
+    method inicializar()
+    {
+        contador = 0
+        numeros.clear()
+        digitos.times({num =>
+            const numero = new Numero(position = position.down(2).left(num - 1))
+            numeros.add(numero)
+            game.addVisual(numero)
+        })
+        
     }
 
     method aumentar(cantidad) 
     {
-        lineasBorradas += cantidad
+        contador += cantidad
         self.actualizarNumeros(numeros, cantidad)
-        if(lineasBorradas > juego.targetLineasBorradas()) juego.finalizar()
+        if(esCondicion and contador >= target) juego.finalizar()
     }
 
-    method actualizarNumeros(nums, cantidad) // TODO: Continuar acá
+    method actualizarNumeros(nums, cantidad)
     {
         nums.first().aumentar(cantidad)
         if(nums.size() > 1 && nums.first().huboCarry())
         {
-            self.actualizarNumeros(nums.drop(1), 1)
-        }
-        
-    }
-    method aplicarGravedad() {}
-}
-object contadorGarbage
-{
-    var property position = game.at(mapa.minX() - 1, mapa.maxY() - 15)
-
-    var property garbageBorrada = 0
-
-    const numeros = [
-        new Numero(position = position.down(2)),
-        new Numero(position = position.down(2).left(1)),
-        new Numero(position = position.down(2).left(2))
-    ]
-    method numeros() = numeros
-
-    method inicializar()
-    {
-        numeros.forEach({numero => game.addVisual(numero)})
-    }
-
-    method aumentar() 
-    {
-        garbageBorrada += 1
-        self.actualizarNumeros(numeros, 1)
-        if(garbageBorrada >= juego.targetGarbageBorrada()) juego.finalizar()
-    }
-
-    method actualizarNumeros(nums, cantidad) // TODO: Continuar acá
-    {
-        nums.first().aumentar(cantidad)
-        if(nums.size() > 1 && nums.first().huboCarry())
-        {
-            self.actualizarNumeros(nums.drop(1), 1)
+            self.actualizarNumeros(nums.drop(1), nums.first().cuantoCarry())
         }
         
     }

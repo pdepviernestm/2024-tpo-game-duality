@@ -11,31 +11,40 @@ program tetris {
     const gameWidth = 40
     const gameHeight = 24
 
-    pantallaActual.iniciar()
+    interfaz.iniciar()
 
     game.width(gameWidth)
     game.height(gameHeight)
     game.cellSize(cellSize)
 
-    game.boardGround("TEST_bkg.png")
+    game.boardGround("bkg.png")
     game.title("Tetris Trainer")
+
+    const musica = game.sound("music.mp3")
+
     game.start()
-
-    keyboard.space().onPressDo({pantallaActual.teclaSpace()})
-    keyboard.shift().onPressDo({pantallaActual.teclaShift()})
+    game.schedule(3000,{ 
+        musica.shouldLoop(true)
+        musica.play()
+    })
     
-    keyboard.right().onPressDo({pantallaActual.teclaRight()})
-    keyboard.left().onPressDo({pantallaActual.teclaLeft()})
-    keyboard.up().onPressDo({pantallaActual.teclaUp()})
-    keyboard.down().onPressDo({pantallaActual.teclaDown()})
 
-    keyboard.c().onPressDo({pantallaActual.teclaC()})
-    keyboard.x().onPressDo({pantallaActual.teclaX()})
-    keyboard.z().onPressDo({pantallaActual.teclaZ()})
+    keyboard.space().onPressDo({interfaz.teclaSpace()})
+    keyboard.shift().onPressDo({interfaz.teclaShift()})
+    
+    keyboard.right().onPressDo({interfaz.teclaRight()})
+    keyboard.left().onPressDo({interfaz.teclaLeft()})
+    keyboard.up().onPressDo({interfaz.teclaUp()})
+    keyboard.down().onPressDo({interfaz.teclaDown()})
 
-    keyboard.backspace().onPressDo({pantallaActual.teclaBack()})
+    keyboard.c().onPressDo({interfaz.teclaC()})
+    keyboard.x().onPressDo({interfaz.teclaX()})
+    keyboard.z().onPressDo({interfaz.teclaZ()})
+
+    keyboard.p().onPressDo({interfaz.teclaP()})
+    keyboard.backspace().onPressDo({interfaz.teclaBack()})
 
 
-    game.onTick(500, "movimiento", {pantallaActual.aplicarTick()})
+    game.onTick(500, "gravedad", {interfaz.aplicarTick()})
 }
 
