@@ -199,13 +199,10 @@ object juego
     {
         interfaz.setearPantalla(estadisticas)
         var score = 0
-        if(esDigRace) {score = targetGarbageBorrada}
-        else {score = targetLineasBorradas}
+        if(esDigRace and eventos.garbageBorrada() >= targetGarbageBorrada) {score = targetGarbageBorrada}
+        if (not esDigRace and eventos.lineasBorradas() >= targetLineasBorradas) {score = targetLineasBorradas}
 
-        score = score * 4
-
-        if(bloquesPuestos < score) {score = 0}
-        else {score = score / bloquesPuestos * 100}
+        score = score * 4 / bloquesPuestos * 100
         
         //console.println(score)
         //console.println(bloquesPuestos)

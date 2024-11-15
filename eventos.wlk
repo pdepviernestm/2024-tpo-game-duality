@@ -67,7 +67,8 @@ object eventos
         contadorScore.inicializar()
         contadorScore.aumentar(cantidad)
     }
-    
+    method garbageBorrada() = contadorGarbage.contador()
+    method lineasBorradas() = contadorLineas.contador()
 }
 
 class Contador
